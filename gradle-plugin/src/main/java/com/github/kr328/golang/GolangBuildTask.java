@@ -82,7 +82,7 @@ public abstract class GolangBuildTask extends Exec {
             File output,
             String fileName,
             Collection<String> tags,
-            String moduleFile
+            String packageName
     ) {
         getGolangSource().set(source);
         getGolangOutput().set(output);
@@ -97,9 +97,14 @@ public abstract class GolangBuildTask extends Exec {
         commands.add("-o");
         commands.add(getGolangOutput().file(fileName).get().getAsFile().getAbsolutePath());
 
-        if (!getTags().get().isEmpty()) {
+        ArrayList<String> prependTags = new ArrayList<>(getTags().get());
+        if (variant.getBuildType().isDebuggable()) {
+            prependTags.add("debug");
+        }
+
+        if (!prependTags.isEmpty()) {
             commands.add("-tags");
-            commands.add(String.join(",", getTags().get()));
+            commands.add(String.join(",", prependTags));
         }
 
         if (!variant.getBuildType().isDebuggable()) {
@@ -107,8 +112,8 @@ public abstract class GolangBuildTask extends Exec {
             commands.add("-s -w");
         }
 
-        if (!moduleFile.isEmpty()) {
-            commands.add("-modfile=" + moduleFile);
+        if (!packageName.isEmpty()) {
+            commands.add(packageName);
         }
 
         environment(environmentOf(base.getNdkDirectory(), abi, Objects.requireNonNull(base.getDefaultConfig().getMinSdk())));

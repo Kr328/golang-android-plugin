@@ -77,12 +77,16 @@ public class GolangPlugin implements Plugin<Project> {
             File output = outputDirOf(target, variant, abi);
             File source = sourceSet.getSrcDir().get().getAsFile();
             List<String> tags = sourceSet.getTags().getOrElse(Collections.emptyList());
-            String moduleFile = sourceSet.getModuleFile().getOrElse("");
+            String packageName = sourceSet.getPackageName().getOrElse("");
 
             GolangBuildTask task = target.getTasks().create(taskNameOf(variant, abi), GolangBuildTask.class)
-                    .applyFor(base, variant, abi, source, output, sourceSet.getFileName().get(), tags, moduleFile);
+                    .applyFor(base, variant, abi, source, output, sourceSet.getFileName().get(), tags, packageName);
 
-            variant.getPreBuildProvider().get().dependsOn(task);
+            variant.getExternalNativeBuildProviders().forEach(t -> t.get().dependsOn(task));
+
+            target.getTasks().stream()
+                    .filter(t -> t.getName().contains("JniLib") || t.getName().contains("CMake"))
+                    .forEach(t -> t.mustRunAfter(task));
 
             //noinspection ResultOfMethodCallIgnored
             output.mkdirs();
