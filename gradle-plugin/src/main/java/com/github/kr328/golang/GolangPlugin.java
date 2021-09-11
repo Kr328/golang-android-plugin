@@ -84,12 +84,12 @@ public class GolangPlugin implements Plugin<Project> {
             GolangBuildTask task = target.getTasks().create(taskNameOf(variant, abi), GolangBuildTask.class)
                     .applyFor(base, variant, abi, source, output, sourceSet.getFileName().get(), tags);
 
-            base.getSourceSets().getByName(variant.getName()).getJni().srcDir(output);
-
             variant.getPreBuildProvider().get().dependsOn(task);
 
             //noinspection ResultOfMethodCallIgnored
             output.mkdirs();
         });
+
+        base.getSourceSets().getByName(variant.getName()).getJniLibs().srcDir(outputDirOf(target, variant, null));
     }
 }
