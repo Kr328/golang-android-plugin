@@ -75,7 +75,15 @@ public abstract class GolangBuildTask extends Exec {
         return environment;
     }
 
-    public GolangBuildTask applyFor(BaseExtension base, BaseVariant variant, String abi, File source, File output, String fileName, Collection<String> tags) {
+    public GolangBuildTask applyFor(
+            BaseExtension base,
+            BaseVariant variant,
+            String abi, File source,
+            File output,
+            String fileName,
+            Collection<String> tags,
+            String moduleFile
+    ) {
         getGolangSource().set(source);
         getGolangOutput().set(output);
         getTags().set(tags);
@@ -97,6 +105,10 @@ public abstract class GolangBuildTask extends Exec {
         if (!variant.getBuildType().isDebuggable()) {
             commands.add("-ldflags");
             commands.add("-s -w");
+        }
+
+        if (!moduleFile.isEmpty()) {
+            commands.add("-modfile=" + moduleFile);
         }
 
         environment(environmentOf(base.getNdkDirectory(), abi, Objects.requireNonNull(base.getDefaultConfig().getMinSdk())));

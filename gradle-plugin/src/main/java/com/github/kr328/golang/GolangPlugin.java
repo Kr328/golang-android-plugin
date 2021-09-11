@@ -9,10 +9,7 @@ import org.gradle.api.Project;
 
 import javax.annotation.Nonnull;
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -79,10 +76,11 @@ public class GolangPlugin implements Plugin<Project> {
 
             File output = outputDirOf(target, variant, abi);
             File source = sourceSet.getSrcDir().get().getAsFile();
-            List<String> tags = sourceSet.getTags().get();
+            List<String> tags = sourceSet.getTags().getOrElse(Collections.emptyList());
+            String moduleFile = sourceSet.getModuleFile().getOrElse("");
 
             GolangBuildTask task = target.getTasks().create(taskNameOf(variant, abi), GolangBuildTask.class)
-                    .applyFor(base, variant, abi, source, output, sourceSet.getFileName().get(), tags);
+                    .applyFor(base, variant, abi, source, output, sourceSet.getFileName().get(), tags, moduleFile);
 
             variant.getPreBuildProvider().get().dependsOn(task);
 

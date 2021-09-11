@@ -17,6 +17,8 @@ public abstract class GolangSourceSet {
 
     public abstract Property<String> getFileName();
 
+    public abstract Property<String> getModuleFile();
+
     public String getName() {
         return name;
     }

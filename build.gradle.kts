@@ -9,7 +9,7 @@ allprojects {
 
 subprojects {
     group = "com.github.kr328.golang"
-    version = "1.0.1"
+    version = "1.0.2"
 
     afterEvaluate {
         extensions.findByType(PublishingExtension::class)?.apply {
