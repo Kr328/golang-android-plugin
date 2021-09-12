@@ -94,6 +94,7 @@ public abstract class GolangBuildTask extends Exec {
         commands.add("build");
         commands.add("-buildmode");
         commands.add("c-shared");
+        commands.add("-trimpath");
         commands.add("-o");
         commands.add(getGolangOutput().file(fileName).get().getAsFile().getAbsolutePath());
 
