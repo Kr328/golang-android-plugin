@@ -2,6 +2,7 @@ plugins {
     java
     `java-gradle-plugin`
     `maven-publish`
+    alias(deps.plugins.lombok)
 }
 
 dependencies {
@@ -16,9 +17,9 @@ java {
 
 gradlePlugin {
     plugins {
-        create("golang-android") {
-            id = "golang-android"
-            implementationClass = "com.github.kr328.golang.GolangPlugin"
+        create("golang") {
+            id = "com.github.kr328.gradle.golang"
+            implementationClass = "com.github.kr328.gradle.golang.ProjectPlugin"
         }
     }
 }

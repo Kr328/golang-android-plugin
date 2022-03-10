@@ -1,15 +1,26 @@
-enableFeaturePreview("VERSION_CATALOGS")
+@file:Suppress("UnstableApiUsage")
 
 rootProject.name = "golang-android-plugin"
 
 include("gradle-plugin")
 
+pluginManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        gradlePluginPortal()
+    }
+}
+
 dependencyResolutionManagement {
     versionCatalogs {
         create("deps") {
-            val agpVersion = "4.2.1"
+            val agp = "7.1.0"
+            val lombok = "6.4.1"
 
-            alias("android-gradle").to("com.android.tools.build:gradle:$agpVersion")
+            library("android-gradle", "com.android.tools.build:gradle:$agp")
+            plugin("lombok", "io.freefair.lombok").version(lombok)
         }
     }
 }

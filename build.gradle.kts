@@ -1,22 +1,18 @@
-import java.util.*
+subprojects {
+    group = "com.github.kr328.gradle.golang"
+    version = "1.0.5"
 
-allprojects {
     repositories {
         mavenCentral()
         google()
     }
-}
-
-subprojects {
-    group = "com.github.kr328.golang"
-    version = "1.0.4"
 
     afterEvaluate {
-        extensions.findByType(PublishingExtension::class)?.apply {
+        extensions.configure<PublishingExtension> {
             val sourcesJar = tasks.register("sourcesJar", type = Jar::class) {
                 archiveClassifier.set("sources")
 
-                from((project.extensions.getByName("sourceSets") as SourceSetContainer)["main"].allSource)
+                from(project.extensions.getByType(SourceSetContainer::class)["main"].allSource)
             }
 
             publications {
@@ -51,18 +47,11 @@ subprojects {
             }
 
             repositories {
-                val publishFile = rootProject.file("publish.properties")
-                if (publishFile.exists()) {
-                    val publish = Properties().apply { publishFile.inputStream().use(this::load) }
-
-                    maven {
-                        url = uri(publish.getProperty("publish.url")!!)
-
-                        credentials {
-                            username = publish.getProperty("publish.user")!!
-                            password = publish.getProperty("publish.password")!!
-                        }
-                    }
+                mavenLocal()
+                maven {
+                    name = "kr328app"
+                    url = uri("https://maven.kr328.app/releases")
+                    credentials(PasswordCredentials::class.java)
                 }
             }
         }
